@@ -25,7 +25,24 @@
   head.addEventListener('pointerup',()=>drag=null);head.addEventListener('pointercancel',()=>drag=null);
  });
  $('#logo').addEventListener('click',e=>{const el=e.currentTarget;el.classList.remove('replay');void el.offsetWidth;el.classList.add('replay')});
- $$('.swatch').forEach(b=>b.addEventListener('click',()=>{const c=b.dataset.color;document.documentElement.style.setProperty('--accent',c);document.documentElement.style.setProperty('--accent-rgb',c)}));
+ // Theme engine: presets, live controls, and local persistence.
+ const root=document.documentElement, dockWrap=$('.dock-wrap');
+ const defaults={preset:'midnight',accent:'#b99aff',wallpaper:'aurora',blur:24,radius:22,motion:100,dock:'bottom'};
+ const presets={midnight:{accent:'#b99aff',wallpaper:'aurora'},arctic:{accent:'#83c9ff',wallpaper:'ocean'},rose:{accent:'#ff9fc8',wallpaper:'dusk'},emerald:{accent:'#8ee0bd',wallpaper:'plain'}};
+ let theme={...defaults};
+ try{const saved=JSON.parse(localStorage.getItem('jammle-theme')||'null');if(saved)theme={...defaults,...saved}}catch(e){}
+ function applyTheme(){root.style.setProperty('--accent',theme.accent);root.style.setProperty('--blur',theme.blur+'px');root.style.setProperty('--radius',theme.radius+'px');root.style.setProperty('--motion',String(theme.motion/100));const backgrounds={aurora:'radial-gradient(ellipse at 18% 12%,#312449 0,transparent 38%),radial-gradient(ellipse at 85% 85%,#172d4b 0,transparent 38%),linear-gradient(145deg,#090a12,#11111e 60%,#090b14)',dusk:'radial-gradient(ellipse at 18% 15%,#512b48 0,transparent 42%),radial-gradient(ellipse at 85% 85%,#30203e 0,transparent 40%),linear-gradient(145deg,#100a13,#1b111e)',ocean:'radial-gradient(ellipse at 20% 12%,#17465a 0,transparent 42%),radial-gradient(ellipse at 85% 80%,#172d55 0,transparent 40%),linear-gradient(145deg,#071018,#0d1826)',plain:'linear-gradient(145deg,#08090d,#11131a)'};root.style.setProperty('--wallpaper-bg',backgrounds[theme.wallpaper]||backgrounds.aurora);dockWrap.classList.remove('dock-left','dock-right');if(theme.dock==='left')dockWrap.classList.add('dock-left');if(theme.dock==='right')dockWrap.classList.add('dock-right');$('#accent-picker').value=theme.accent;$('#wallpaper-select').value=theme.wallpaper;$('#blur-range').value=theme.blur;$('#radius-range').value=theme.radius;$('#motion-range').value=theme.motion;$('#dock-select').value=theme.dock;$('#blur-value').textContent=theme.blur;$('#radius-value').textContent=theme.radius;$('#motion-value').textContent=theme.motion;$('[data-preset]').forEach(b=>b.classList.toggle('selected',b.dataset.preset===theme.preset));}
+ function saveTheme(){try{localStorage.setItem('jammle-theme',JSON.stringify(theme));$('#theme-saved').textContent='Saved on this device'}catch(e){$('#theme-saved').textContent='Changes active until you close this page'}}
+ function updateTheme(key,value){theme[key]=value;if(key==='accent'||key==='wallpaper')theme.preset='custom';applyTheme();saveTheme()}
+ $('[data-preset]').forEach(b=>b.addEventListener('click',()=>{const p=b.dataset.preset;theme={...theme,...presets[p],preset:p};applyTheme();saveTheme()}));
+ $('#accent-picker').addEventListener('input',e=>updateTheme('accent',e.target.value));
+ $('#wallpaper-select').addEventListener('change',e=>updateTheme('wallpaper',e.target.value));
+ $('#blur-range').addEventListener('input',e=>updateTheme('blur',Number(e.target.value)));
+ $('#radius-range').addEventListener('input',e=>updateTheme('radius',Number(e.target.value)));
+ $('#motion-range').addEventListener('input',e=>updateTheme('motion',Number(e.target.value)));
+ $('#dock-select').addEventListener('change',e=>updateTheme('dock',e.target.value));
+ $('#reset-theme').addEventListener('click',()=>{theme={...defaults};applyTheme();saveTheme()});
+ applyTheme();
  $('#back-home').addEventListener('click',()=>{desktop.classList.remove('active');home.classList.remove('hidden')});
  $('#anime-demo').addEventListener('click',()=>$('#anime-status').textContent='The player interface is ready. Streaming sources and backend support will be added in a later phase.');
  $('#make-link').addEventListener('click',()=>{const app=$('#link-app').value;const link=location.origin+location.pathname+'?app='+encodeURIComponent(app);$('#generated-link').value=link;$('#generated-link').select();});
