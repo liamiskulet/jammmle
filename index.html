@@ -1,98 +1,11 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090912">
-  <title>Jammle</title>
-  <style>
-    :root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0; min-height: 100svh; overflow: hidden; color: #f5f2ff;
-      background: radial-gradient(ellipse at 50% 42%, #29213f 0%, #141321 38%, #090912 78%);
-    }
-    body::before, body::after { content: ""; position: fixed; width: 34rem; height: 34rem; border-radius: 50%; filter: blur(90px); opacity: .17; pointer-events: none; }
-    body::before { background: #9c78ff; top: -22rem; left: -12rem; }
-    body::after { background: #5c8bff; bottom: -25rem; right: -12rem; }
-    main { min-height: 100svh; display: grid; place-items: center; padding: 28px 20px; position: relative; }
-    .center { width: min(100%, 650px); display: flex; flex-direction: column; align-items: center; transform: translateY(-4vh); }
-    .logo {
-      border: 0; background: none; color: #f5f0ff; cursor: pointer; padding: 8px 14px 18px;
-      font-size: clamp(3.4rem, 13vw, 6.2rem); font-weight: 750; letter-spacing: -.085em; line-height: 1;
-      text-shadow: 0 0 34px #b99cff55; user-select: none;
-    }
-    .logo span { display: inline-block; animation: jelly-in 850ms cubic-bezier(.2,1.6,.4,1) both; }
-    .logo span:nth-child(2) { animation-delay: 45ms } .logo span:nth-child(3) { animation-delay: 90ms }
-    .logo span:nth-child(4) { animation-delay: 135ms } .logo span:nth-child(5) { animation-delay: 180ms }
-    .logo span:nth-child(6) { animation-delay: 225ms }
-    @keyframes jelly-in { 0% { transform: scale(.55,.7) translateY(22px); opacity: 0 } 45% { transform: scale(1.16,.82) translateY(-5px) } 70% { transform: scale(.92,1.1) } 100% { transform: scale(1); opacity: 1 } }
-    .logo.replay span { animation: jelly-in 850ms cubic-bezier(.2,1.6,.4,1) both; }
-    .tagline { color: #aaa4bd; font-size: .88rem; margin: 0 0 28px; letter-spacing: .025em; }
-    form {
-      width: 100%; display: flex; align-items: center; gap: 12px; padding: 8px 9px 8px 20px;
-      border: 1px solid #ffffff20; border-radius: 22px; background: #ffffff0d;
-      box-shadow: 0 18px 60px #0005, inset 0 1px #ffffff12; backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      transition: border-color .2s, background .2s, transform .2s;
-    }
-    form:focus-within { border-color: #b89cff80; background: #ffffff12; transform: translateY(-2px); }
-    .search-icon { color: #aaa2bf; font-size: 1.15rem; }
-    input { min-width: 0; flex: 1; color: #f5f2ff; background: transparent; border: 0; outline: 0; font: inherit; font-size: 1rem; }
-    input::placeholder { color: #888298; }
-    .go { border: 0; border-radius: 15px; padding: 12px 17px; color: #171124; background: #d7c8ff; font: inherit; font-weight: 650; cursor: pointer; transition: transform .18s, background .18s; }
-    .go:hover { transform: scale(1.04); background: #e4d9ff; }
-    .shortcuts { display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap; justify-content: center; }
-    .shortcut { min-width: 94px; border: 1px solid #ffffff16; border-radius: 17px; background: #ffffff09; color: #c9c3d8; padding: 13px 16px; font: inherit; font-size: .82rem; cursor: pointer; backdrop-filter: blur(16px); transition: .2s; }
-    .shortcut:hover { background: #ffffff16; border-color: #c6adff66; transform: translateY(-3px); color: white; }
-    .shortcut b { display: block; font-size: 1.25rem; font-weight: 500; margin-bottom: 5px; }
-    footer { position: fixed; bottom: 18px; left: 0; right: 0; text-align: center; color: #777184; font-size: .72rem; letter-spacing: .04em; }
-    @media (max-width: 480px) { .center { transform: translateY(-2vh); } .tagline { margin-bottom: 24px; } form { border-radius: 19px; padding-left: 15px; } .go { padding: 11px 14px; } .shortcut { min-width: 86px; padding: 12px 13px; } }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
-  </style>
-</head>
-<body>
-  <main>
-    <section class="center" aria-label="Jammle home">
-      <button class="logo" id="logo" aria-label="Replay Jammle logo animation"><span>J</span><span>a</span><span>m</span><span>m</span><span>l</span><span>e</span></button>
-      <p class="tagline">A little space for everything.</p>
-      <form id="search" role="search">
-        <span class="search-icon" aria-hidden="true">⌕</span>
-        <input id="query" type="search" placeholder="Search the web or enter a link..." autocomplete="off" aria-label="Search the web or enter a link">
-        <button class="go" type="submit">Go ↗</button>
-      </form>
-      <nav class="shortcuts" aria-label="Quick launch">
-        <button class="shortcut" type="button" data-app="browser"><b>◉</b>Browser</button>
-        <button class="shortcut" type="button" data-app="anime"><b>▷</b>Anime</button>
-        <button class="shortcut" type="button" data-app="settings"><b>⚙</b>Settings</button>
-      </nav>
-    </section>
-  </main>
-  <footer>JAMMLE · YOUR DESKTOP, YOUR WAY</footer>
-  <script>
-    const form = document.getElementById('search');
-    const input = document.getElementById('query');
-    form.addEventListener('submit', (event) => {
-      event.preventDefault();
-      const value = input.value.trim();
-      if (!value) { input.focus(); return; }
-      const looksLikeUrl = /^(https?:\/\/)|^([\w-]+\.)+[a-z]{2,}(\/.*)?$/i.test(value);
-      const destination = looksLikeUrl
-        ? (value.startsWith('http') ? value : 'https://' + value)
-        : 'https://www.google.com/search?q=' + encodeURIComponent(value);
-      window.location.href = destination;
-    });
-    document.getElementById('logo').addEventListener('click', (event) => {
-      const logo = event.currentTarget;
-      logo.classList.remove('replay');
-      void logo.offsetWidth;
-      logo.classList.add('replay');
-    });
-    document.querySelectorAll('[data-app]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const app = button.dataset.app;
-        alert(app[0].toUpperCase() + app.slice(1) + ' is coming in the next build.');
-      });
-    });
-  </script>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090a12"><meta name="description" content="Jammle — your desktop, your way."><title>Jammle</title><link rel="stylesheet" href="style.css"></head>
+<body><div class="wallpaper"><div class="orb"></div><div class="orb two"></div><div class="noise"></div></div>
+<section class="home" id="home"><div class="home-inner"><button class="brand" id="logo" aria-label="Replay logo animation"><span>J</span><span>a</span><span>m</span><span>m</span><span>l</span><span>e</span></button><p class="tagline">A little space for everything.</p><form class="search" id="search-form"><span aria-hidden="true">⌕</span><input id="home-query" type="search" placeholder="Search the web or enter a link…" autocomplete="off" aria-label="Search"><button type="submit">Go ↗</button></form><div class="quick-apps"><button class="quick-app" data-open="browser"><span class="glyph">◎</span>Browser</button><button class="quick-app" data-open="anime"><span class="glyph">▷</span>Anime</button><button class="quick-app" data-open="settings"><span class="glyph">⚙</span>Settings</button><button class="quick-app" data-open="files"><span class="glyph">▤</span>Files</button></div></div></section>
+<section class="desktop" id="desktop"><header class="topbar glass"><div class="top-brand">jammle</div><div class="top-right"><span>Workspace</span><span id="clock">● Online</span><button id="back-home" style="border:0;background:none;color:inherit;cursor:pointer">⌂ Home</button></div></header><div class="desktop-hint">Your space. Open an app from the dock.</div>
+<div class="window glass" id="win-browser" data-window="browser" hidden><div class="window-head"><div class="traffic"><button class="close" aria-label="Close"></button><button class="min" aria-label="Minimize"></button><button class="max" aria-label="Maximize"></button></div><div class="window-title">Browser</div></div><div class="window-body"><div class="browser-bar"><input id="browser-address" placeholder="Search or enter a website address"><button class="primary" id="browser-go">Go</button></div><div class="browser-view" id="browser-view"><div><div style="font-size:2rem;margin-bottom:10px">◎</div><strong>Your browser space</strong><p>Enter a search or website address above. Some websites prevent embedded previews; those can be opened in a new tab.</p></div></div></div></div>
+<div class="window glass" id="win-anime" data-window="anime" hidden><div class="window-head"><div class="traffic"><button class="close" aria-label="Close"></button><button class="min" aria-label="Minimize"></button><button class="max" aria-label="Maximize"></button></div><div class="window-title">Anime</div></div><div class="window-body"><h2 class="app-title">Anime space</h2><p class="app-sub">A home for your watchlist and video player.</p><div class="notice">The interface is ready. Actual streaming will need a lawful video source or a source you have permission to use, plus any required hosting/backend.</div><div class="tile" style="margin-top:15px"><div class="tile-icon">▷</div><h3>Video player</h3><p id="anime-status">Player area reserved for the next development phase.</p><button class="primary" id="anime-demo" style="margin-top:14px">Check player status</button></div></div></div>
+<div class="window glass" id="win-settings" data-window="settings" hidden><div class="window-head"><div class="traffic"><button class="close" aria-label="Close"></button><button class="min" aria-label="Minimize"></button><button class="max" aria-label="Maximize"></button></div><div class="window-title">Settings</div></div><div class="window-body"><h2 class="app-title">Personalize Jammle</h2><p class="app-sub">Choose an accent for your workspace.</p><div class="setting-row"><div>Accent color<small>Changes buttons and highlights</small></div><div class="swatches"><button class="swatch" data-color="#b99aff" style="background:#b99aff" aria-label="Lavender"></button><button class="swatch" data-color="#83c9ff" style="background:#83c9ff" aria-label="Ice blue"></button><button class="swatch" data-color="#ff9fc8" style="background:#ff9fc8" aria-label="Pink"></button><button class="swatch" data-color="#8ee0bd" style="background:#8ee0bd" aria-label="Mint"></button></div></div><div class="setting-row"><div>Visual style<small>Dark glass workspace</small></div><span>Liquid glass</span></div><div class="setting-row"><div>Layout<small>Desktop window mode</small></div><span>Floating windows</span></div></div></div>
+<div class="window glass" id="win-files" data-window="files" hidden><div class="window-head"><div class="traffic"><button class="close" aria-label="Close"></button><button class="min" aria-label="Minimize"></button><button class="max" aria-label="Maximize"></button></div><div class="window-title">Files</div></div><div class="window-body"><h2 class="app-title">Files</h2><p class="app-sub">Your Jammle workspace</p><div class="file-list"><div class="file-item">▣ &nbsp; Home</div><div class="file-item">◈ &nbsp; Apps</div><div class="file-item">◇ &nbsp; Themes</div></div><p class="notice" style="margin-top:16px">Local file management will be connected in a later phase.</p></div></div>
+<div class="window glass" id="win-links" data-window="links" hidden><div class="window-head"><div class="traffic"><button class="close" aria-label="Close"></button><button class="min" aria-label="Minimize"></button><button class="max" aria-label="Maximize"></button></div><div class="window-title">Link Studio</div></div><div class="window-body"><h2 class="app-title">Link Studio</h2><p class="app-sub">Create a shortcut that opens a Jammle app.</p><div class="setting-row"><label for="link-app">Open app</label><select id="link-app" class="field" style="max-width:190px"><option value="browser">Browser</option><option value="anime">Anime</option><option value="settings">Settings</option><option value="files">Files</option></select></div><button class="primary" id="make-link" style="margin-top:15px">Generate link</button><input id="generated-link" class="field" readonly placeholder="Your link will appear here" style="width:100%;margin-top:14px"></div></div>
+<div class="dock-wrap"><nav class="dock glass" id="dock" aria-label="App dock"><button class="dock-btn" data-launch="browser" title="Browser">◎</button><button class="dock-btn" data-launch="anime" title="Anime">▷</button><button class="dock-btn" data-launch="files" title="Files">▤</button><span class="dock-sep"></span><button class="dock-btn" data-launch="links" title="Link Studio">↗</button><button class="dock-btn" data-launch="settings" title="Settings">⚙</button></nav></div></section><script src="desktop.js"></script></body></html>
